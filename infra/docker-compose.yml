@@ -9,7 +9,7 @@ services:
     ports:
       - "3307:3306"
     volumes:
-      - ./mysql:/docker-entrypoint-initdb.d
+      - ../db:/docker-entrypoint-initdb.d:ro
     networks:
       - ev_network
     healthcheck:
@@ -43,6 +43,8 @@ services:
     container_name: ev_auth_service
     env_file: 
       - ../ev-service-center-backend/auth-service/.env
+    environment:
+      - DB_HOST=ev_mysql
     ports:
       - "5001:5001"
     depends_on:
