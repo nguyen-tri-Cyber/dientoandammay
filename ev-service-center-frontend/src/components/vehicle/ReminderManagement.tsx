@@ -1,0 +1,328 @@
+"use client";
+import React, { useState, useEffect, useCallback } from "react";
+import { Modal } from "../ui/modal";
+import { useModal } from "@/hooks/useModal";
+import { Reminder, CreateReminderRequest, addReminder, getReminders } from "@/services/vehicleService";
+import { toast } from "react-hot-toast";
+import Bell from "@/icons/bell.svg";
+import Plus from "@/icons/plus.svg";
+import Alert from "@/icons/alert.svg";
+import { useAuth } from "@/hooks/useAuth";
+
+interface ReminderManagementProps {
+  vehicleId: number;
+  vehicleName: string;
+}
+
+export default function ReminderManagement({ vehicleId, vehicleName }: ReminderManagementProps) {
+  const [reminders, setReminders] = useState<Reminder[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState<CreateReminderRequest>({
+    vehicleId,
+    message: "",
+    date: "",
+  });
+  const { isOpen, openModal, closeModal } = useModal();
+
+  // ==========================================
+  // 🔥 PHẦN THÊM MỚI: LOGIC ĐÁNH DẤU HOÀN THÀNH
+  // ==========================================
+  const { user: currentUser } = useAuth();
+  // Kiểm tra xem có phải khách hàng không (Khách hàng sẽ không thấy nút tick)
+  const isCustomer = currentUser?.userRoles?.some((ur: { role?: { name?: string } }) => ur.role?.name === 'user');
+  
+  const [completedIds, setCompletedIds] = useState<number[]>([]);
+
+  // Lấy trạng thái đã hoàn thành từ LocalStorage khi mở form
+  useEffect(() => {
+    const saved = localStorage.getItem('completed_reminders');
+    if (saved) {
+      setCompletedIds(JSON.parse(saved));
+    }
+  }, []);
+
+  // Xử lý khi nhấn nút tick xanh
+  const handleMarkCompleted = (id: number) => {
+    const updatedIds = [...completedIds, id];
+    setCompletedIds(updatedIds);
+    localStorage.setItem('completed_reminders', JSON.stringify(updatedIds));
+  };
+  // ==========================================
+
+  const fetchReminders = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const data = await getReminders(vehicleId);
+      setReminders(data);
+    } catch {
+      toast.error("Không thể tải danh sách nhắc nhở");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [vehicleId]);
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchReminders();
+    }
+  }, [isOpen, vehicleId, fetchReminders]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Kiểm tra nhanh ở Frontend để tránh gọi API thừa
+    if (!formData.message || !formData.date) {
+      alert("Vui lòng nhập đầy đủ nội dung và ngày nhắc nhở");
+      return;
+    }
+
+    if (isSubmitting) return;
+
+    try {
+      setIsSubmitting(true);
+      
+      // Gọi API thêm nhắc nhở
+      await addReminder(vehicleId, formData);
+      
+      // NẾU THÀNH CÔNG: Sẽ chạy các dòng dưới đây
+      toast.success("Thêm nhắc nhở thành công");
+      
+      // Xóa trắng dữ liệu trên form
+      setFormData({
+        vehicleId,
+        message: "",
+        date: "",
+      });
+      // Tải lại danh sách
+      fetchReminders();
+      
+    } catch (error: unknown) {
+      //  NẾU LỖI: Luồng chạy sẽ nhảy thẳng xuống đây, không xóa trắng form
+
+      // In toàn bộ object lỗi ra tab Console (F12) để dễ dàng kiểm tra cấu trúc
+      console.error("Toàn bộ object lỗi từ API:", error);
+
+      const errorDetails = error as {
+        response?: { data?: { message?: string }; message?: string };
+        data?: { message?: string };
+        message?: string;
+      };
+
+      // 🔥 Moi câu thông báo lỗi bằng cách quét toàn bộ các tầng cấu trúc
+      const errorMsg =
+        errorDetails?.response?.data?.message ||
+        errorDetails?.response?.message ||
+        errorDetails?.data?.message ||
+        errorDetails?.message ||
+        "Không thể thêm nhắc nhở. Vui lòng thử lại.";
+      
+      // Hiện Alert bắt người dùng nhấn OK (Không bao giờ bị giao diện đè lên)
+      alert("Hệ thống báo lỗi:\n" + errorMsg);
+      
+      // Vẫn hiện thêm Toast đỏ cho đồng bộ UI
+      toast.error(errorMsg, { duration: 5000 });
+      
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('vi-VN');
+  };
+
+  return (
+    <>
+      <button
+        onClick={openModal}
+        className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2.5 text-sm font-medium text-white shadow-lg transition-all duration-200 hover:from-amber-600 hover:to-orange-600 hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:ring-offset-2"
+      >
+        Nhắc nhở
+      </button>
+
+      <Modal
+        isOpen={isOpen}
+        onClose={closeModal}
+        className="max-w-[900px] p-0"
+      >
+        <div className="flex flex-col h-full max-h-[80vh] overflow-hidden">
+          {/* Header */}
+          <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
+            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-amber-500 to-orange-500">
+              <Bell className="h-5 w-5 fill-white" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                Quản lý nhắc nhở
+              </h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {vehicleName}
+              </p>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+
+            {/* Add Reminder Form */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+              <div className="p-6">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div>
+                    <label className="block text-lg font-semibold text-gray-800 dark:text-gray-200 mb-3 text-left">
+                      Nội dung nhắc nhở
+                    </label>
+                    <textarea
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-3 text-base text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-colors duration-200"
+                      rows={4}
+                      placeholder="Nhập nội dung nhắc nhở..."
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-lg font-semibold text-gray-800 dark:text-gray-200 mb-3 text-left">
+                      Ngày nhắc nhở
+                    </label>
+                    <input
+                      type="date"
+                      value={formData.date}
+                      onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                      className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-3 text-base text-gray-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-colors duration-200"
+                      required
+                    />
+                  </div>
+                  <div className="flex justify-center">
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-2.5 text-sm font-medium text-white shadow-lg transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                          Đang thêm...
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="h-4 w-4 fill-white" />
+                          Thêm nhắc nhở
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            {/* Reminders List */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                    Danh sách nhắc nhở
+                  </h3>
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                    {reminders.length} nhắc nhở
+                  </span>
+                </div>
+              </div>
+              <div className="p-6">
+                {isLoading ? (
+                  <div className="flex flex-col items-center justify-center py-12">
+                    <div className="animate-spin rounded-full h-8 w-8 border-4 border-blue-200 border-t-blue-600 mb-4"></div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Đang tải danh sách nhắc nhở...</p>
+                  </div>
+                ) : reminders.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-12">
+                    <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-4">
+                      <Alert className="h-8 w-8 fill-gray-400" />
+                    </div>
+                    <h4 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Chưa có nhắc nhở nào</h4>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 text-center max-w-sm">
+                      Hãy thêm nhắc nhở đầu tiên để quản lý lịch bảo dưỡng xe của bạn
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4 text-left">
+                    {reminders.map((reminder: Reminder) => {
+                      // Kiểm tra xem reminder này đã hoàn thành chưa (từ DB hoặc từ LocalStorage)
+                      const isCompleted = reminder.completed || completedIds.includes(reminder.id);
+
+                      return (
+                        <div
+                          key={reminder.id}
+                          className={`group relative overflow-hidden rounded-lg border transition-all duration-200 hover:shadow-md ${
+                            isCompleted
+                              ? "bg-gradient-to-r from-green-50 to-emerald-50 border-green-200 dark:from-green-900/20 dark:to-emerald-900/20 dark:border-green-800"
+                              : "bg-gradient-to-r from-white to-gray-50 border-gray-200 dark:from-gray-800 dark:to-gray-900 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600"
+                          }`}
+                        >
+                          <div className="p-5">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1 min-w-0">
+                                <p className={`text-base font-semibold mb-2 ${
+                                  isCompleted 
+                                    ? "line-through text-gray-500 dark:text-gray-400" 
+                                    : "text-gray-900 dark:text-white"
+                                }`}>
+                                  {reminder.message}
+                                </p>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">
+                                  Ngày: {formatDate(reminder.date)}
+                                </p>
+                              </div>
+                              
+                              {/* Cột hiển thị Badge Trạng thái và Nút Tick liền kề */}
+                              <div className="flex-shrink-0 ml-4 flex items-center gap-2">
+                                <span
+                                  className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium ${
+                                    isCompleted
+                                      ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                                      : "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200"
+                                  }`}
+                                >
+                                  {isCompleted ? "Hoàn thành" : "Chờ xử lý"}
+                                </span>
+
+                                {/* NÚT TICK - Chỉ hiện khi KHÔNG PHẢI KHÁCH HÀNG và CHƯA HOÀN THÀNH */}
+                                {!isCustomer && !isCompleted && (
+                                  <button
+                                    onClick={() => handleMarkCompleted(reminder.id)}
+                                    className="flex items-center justify-center w-8 h-8 rounded-full text-gray-400 hover:text-green-600 hover:bg-green-50 dark:hover:bg-green-900/30 transition-all focus:outline-none"
+                                    title="Đánh dấu hoàn thành"
+                                  >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+            <button
+              onClick={closeModal}
+              type="button"
+              className="inline-flex items-center gap-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-6 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500/20"
+            >
+              Đóng
+            </button>
+          </div>
+        </div>
+      </Modal>
+    </>
+  );
+}
