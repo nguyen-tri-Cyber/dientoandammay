@@ -70,7 +70,7 @@ export const subscribeToChatRooms = (callback: (rooms: ChatRoom[]) => void) => {
   return onSnapshot(q, (snapshot) => {
     const rooms = snapshot.docs.map(docSnap => ({
       id: docSnap.id,
-      ...docSnap.data()
+      ...docSnap.data({ serverTimestamps: 'estimate' })
     } as ChatRoom));
     callback(rooms);
   }, (error) => {
@@ -93,7 +93,7 @@ export const subscribeToMessages = (
   return onSnapshot(q, (snapshot) => {
     const messages = snapshot.docs.map(docSnap => ({
       id: docSnap.id,
-      ...docSnap.data()
+      ...docSnap.data({ serverTimestamps: 'estimate' })
     } as ChatMessage));
     callback(messages);
   }, (error) => {
