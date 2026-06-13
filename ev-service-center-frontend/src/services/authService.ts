@@ -118,7 +118,7 @@ export const createUser = async (data: CreateUserRequest): Promise<User> => {
 };
 
 export const updateUser = async (id: number, data: UpdateUserRequest): Promise<User> => {
-    const res = await httpClient.put(`/api/auth/users/${id}`, data);
+    const res = await httpClient.patch(`/api/auth/users/${id}`, data);
     return res.data;
 };
 

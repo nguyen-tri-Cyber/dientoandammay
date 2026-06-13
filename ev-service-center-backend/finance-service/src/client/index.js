@@ -7,7 +7,9 @@ const authHeaders = AUTH_INTERNAL_TOKEN ? { Authorization: `Bearer ${AUTH_INTERN
 export const bookingClient = {
     async getDashboardStats() {
         try {
-            const response = await axios.get(`${API_GATEWAY_URL}/api/booking/stats/booking`);
+            const response = await axios.get(`${API_GATEWAY_URL}/api/booking/stats/booking`, {
+                headers: authHeaders
+            });
             return { data: response.data };
         } catch (error) {
             console.error('Error fetching booking dashboard stats:', error.message);
@@ -17,7 +19,10 @@ export const bookingClient = {
 
     async getAllAppointments(params = {}) {
         try {
-            const response = await axios.get(`${API_GATEWAY_URL}/api/booking`, { params });
+            const response = await axios.get(`${API_GATEWAY_URL}/api/booking`, {
+                params,
+                headers: authHeaders
+            });
             return response.data;
         } catch (error) {
             console.error('Error fetching appointments:', error.message);
@@ -27,7 +32,9 @@ export const bookingClient = {
 
     async getAppointmentById(appointmentId) {
         try {
-            const response = await axios.get(`${API_GATEWAY_URL}/api/booking/${appointmentId}`);
+            const response = await axios.get(`${API_GATEWAY_URL}/api/booking/${appointmentId}`, {
+                headers: authHeaders
+            });
             return response.data;
         } catch (error) {
             console.error('Error fetching appointment:', error.message);
@@ -39,7 +46,10 @@ export const bookingClient = {
 export const workorderClient = {
     async getRevenueStats(year) {
         try {
-            const response = await axios.get(`${API_GATEWAY_URL}/api/workorder/stats/revenue?year=${year}`);
+            const response = await axios.get(`${API_GATEWAY_URL}/api/workorder/stats/revenue`, {
+                params: { year },
+                headers: authHeaders
+            });
             return response.data;
         } catch (error) {
             console.error('Error fetching revenue stats:', error.message);
@@ -49,7 +59,9 @@ export const workorderClient = {
 
     async getTaskStats() {
         try {
-            const response = await axios.get(`${API_GATEWAY_URL}/api/workorder/stats/tasks`);
+            const response = await axios.get(`${API_GATEWAY_URL}/api/workorder/stats/tasks`, {
+                headers: authHeaders
+            });
             return response.data;
         } catch (error) {
             console.error('Error fetching task stats:', error.message);
@@ -59,7 +71,10 @@ export const workorderClient = {
 
     async getAllWorkOrders(params = {}) {
         try {
-            const response = await axios.get(`${API_GATEWAY_URL}/api/workorder`, { params });
+            const response = await axios.get(`${API_GATEWAY_URL}/api/workorder`, {
+                params,
+                headers: authHeaders
+            });
             return response.data;
         } catch (error) {
             console.error('Error fetching work orders:', error.message);
@@ -69,7 +84,9 @@ export const workorderClient = {
 
     async getWorkOrderById(workOrderId) {
         try {
-            const response = await axios.get(`${API_GATEWAY_URL}/api/workorder/${workOrderId}`);
+            const response = await axios.get(`${API_GATEWAY_URL}/api/workorder/${workOrderId}`, {
+                headers: authHeaders
+            });
             return response.data;
         } catch (error) {
             console.error('Error fetching work order:', error.message);
@@ -81,7 +98,10 @@ export const workorderClient = {
 export const inventoryClient = {
     async getPartsStats(year) {
         try {
-            const response = await axios.get(`${API_GATEWAY_URL}/api/inventory/parts/stats/parts?year=${year}`);
+            const response = await axios.get(`${API_GATEWAY_URL}/api/inventory/parts/stats/parts`, {
+                params: { year },
+                headers: authHeaders
+            });
             return response.data;
         } catch (error) {
             console.error('Error fetching parts stats:', error.message);
@@ -91,7 +111,10 @@ export const inventoryClient = {
 
     async getAllParts(params = {}) {
         try {
-            const response = await axios.get(`${API_GATEWAY_URL}/api/inventory/parts`, { params });
+            const response = await axios.get(`${API_GATEWAY_URL}/api/inventory/parts`, {
+                params,
+                headers: authHeaders
+            });
             return response.data;
         } catch (error) {
             console.error('Error fetching parts:', error.message);
@@ -101,7 +124,9 @@ export const inventoryClient = {
 
     async getPartById(partId) {
         try {
-            const response = await axios.get(`${API_GATEWAY_URL}/api/inventory/parts/${partId}`);
+            const response = await axios.get(`${API_GATEWAY_URL}/api/inventory/parts/${partId}`, {
+                headers: authHeaders
+            });
             return response.data;
         } catch (error) {
             console.error('Error fetching part:', error.message);

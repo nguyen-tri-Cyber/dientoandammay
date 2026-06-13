@@ -4,6 +4,12 @@
   "description": "Thành viên:\r   - Nguyễn Tấn Cường (NT)\r   - Nguyễn Thị Thùy Trang\r   - Huỳnh Duy Thiện\r   - Lê Thế Khang\r   - Võ Anh Quốc",
   "main": "index.js",
   "scripts": {
+    "compose:config": "docker compose -f infra/docker-compose.yml config",
+    "demo:up": "docker compose -f infra/docker-compose.yml up --build -d",
+    "demo:down": "docker compose -f infra/docker-compose.yml down",
+    "demo:logs": "docker compose -f infra/docker-compose.yml logs -f",
+    "frontend:dev": "npm --prefix ev-service-center-frontend run dev",
+    "frontend:build": "npm --prefix ev-service-center-frontend run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

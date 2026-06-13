@@ -52,7 +52,7 @@ export const getServiceCenterById = async (req, res) => {
 
 export const createServiceCenter = async (req, res) => {
   try {
-    const { name, address, phone } = req.body;
+    const { name, address, phone, email, managerId } = req.body;
 
     if (!name || name.length < 3) {
       return res.status(400).json({ message: 'Lỗi B5.1: Tên trung tâm quá ngắn' });
@@ -75,7 +75,7 @@ export const createServiceCenter = async (req, res) => {
       return res.status(400).json({ message: 'Số điện thoại không hợp lệ' });
     }
 
-    const created = await ServiceCenter.create({ name, address, phone });
+    const created = await ServiceCenter.create({ name, address, phone, email, managerId });
     res.status(201).json({
       data: created,
       message: 'Service center created successfully'

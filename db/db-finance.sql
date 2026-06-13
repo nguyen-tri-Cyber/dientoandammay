@@ -31,7 +31,7 @@ CREATE TABLE `Invoices` (
   `appointmentId` int DEFAULT NULL,
   `amount` float NOT NULL,
   `description` text,
-  `status` enum('pending','unpaid','paid','cancelled') DEFAULT 'unpaid',
+  `status` enum('pending','paid','overdue','cancelled') DEFAULT 'pending',
   `dueDate` datetime NOT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,

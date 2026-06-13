@@ -146,7 +146,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       
       // Lấy câu thông báo chi tiết từ Backend
       const fallbackMsg = selectedVehicle?.id ? "Lỗi cập nhật phương tiện" : "Lỗi thêm phương tiện";
-      const errorMsg = error?.response?.data?.message || getErrorMessage(error, fallbackMsg) || fallbackMsg;
+      const errorMsg = getErrorMessage(error, fallbackMsg) || fallbackMsg;
       
       // 1. Hiển thị Alert popup của trình duyệt (Đảm bảo không bao giờ bị đè)
       alert("Hệ thống báo lỗi:\n" + errorMsg);

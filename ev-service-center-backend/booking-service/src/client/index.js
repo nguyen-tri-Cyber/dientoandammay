@@ -29,7 +29,9 @@ export const userClient = {
 export const vehicleClient = {
   async getVehicleById(vehicleId) {
     try {
-      const response = await axios.get(`${VEHICLE_SERVICE_URL}/api/vehicle/${vehicleId}`);
+      const response = await axios.get(`${VEHICLE_SERVICE_URL}/api/vehicle/${vehicleId}`, {
+        headers: authHeaders
+      });
       return response.data.data || response.data;
     } catch (error) {
       console.error('Error fetching vehicle:', error?.message || error);
@@ -46,7 +48,9 @@ export const vehicleClient = {
 export const notificationClient = {
   async createNotification(payload) {
     try {
-      const response = await axios.post(`${NOTIFICATION_SERVICE_URL}/api/notification`, payload);
+      const response = await axios.post(`${NOTIFICATION_SERVICE_URL}/api/notification`, payload, {
+        headers: authHeaders
+      });
       return response.data;
     } catch (error) {
       console.error('Error creating notification:', error?.message || error);

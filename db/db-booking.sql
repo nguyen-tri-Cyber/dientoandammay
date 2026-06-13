@@ -66,6 +66,7 @@ CREATE TABLE `ServiceCenters` (
   `address` varchar(255) NOT NULL,
   `phone` varchar(255) NOT NULL,
   `email` varchar(255) DEFAULT NULL,
+  `managerId` int DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   PRIMARY KEY (`id`)
@@ -78,7 +79,7 @@ CREATE TABLE `ServiceCenters` (
 
 LOCK TABLES `ServiceCenters` WRITE;
 /*!40000 ALTER TABLE `ServiceCenters` DISABLE KEYS */;
-INSERT INTO `ServiceCenters` VALUES (1,'Trung tâm A','Hà Nội','0981248922','trungtama@gmail.com','2025-10-22 04:07:00','2025-10-22 04:07:00'),(2,'Trung tâm B','Đà Nẵng','0123456780','trungtamb@gmail.com','2025-10-22 07:53:45','2025-10-22 07:53:45'),(3,'Trung tâm A1','Hà Nội','0981248922','trungtama@gmail.com','2025-10-22 04:07:00','2025-10-22 04:07:00'),(4,'Trung tâm B1','Đà Nẵng','0123456780','trungtamb@gmail.com','2025-10-22 07:53:45','2025-10-22 07:53:45'),(5,'Trung tâm A2','Hà Nội','0981248922','trungtama@gmail.com','2025-10-22 04:07:00','2025-10-22 04:07:00'),(6,'Trung tâm B2','Đà Nẵng','0123456780','trungtamb@gmail.com','2025-10-22 07:53:45','2025-10-22 07:53:45'),(7,'Trung tâm A3','Hà Nội','0981248922','trungtama@gmail.com','2025-10-22 04:07:00','2025-10-22 04:07:00'),(8,'Trung tâm B3','Đà Nẵng','0123456780','trungtamb@gmail.com','2025-10-22 07:53:45','2025-10-22 07:53:45'),(9,'Trung tâm A4','Hà Nội','0981248922','trungtama@gmail.com','2025-10-22 04:07:00','2025-10-22 04:07:00'),(10,'Trung tâm B4','Đà Nẵng','0123456780','trungtamb@gmail.com','2025-10-22 07:53:45','2025-10-22 07:53:45'),(11,'Trung tâm A5','Hà Nội','0981248922','trungtama@gmail.com','2025-10-22 04:07:00','2025-10-22 04:07:00'),(12,'Trung tâm B5','Đà Nẵng','0123456780','trungtamb@gmail.com','2025-10-22 07:53:45','2025-10-22 07:53:45');
+INSERT INTO `ServiceCenters` VALUES (1,'Trung tâm A','Hà Nội','0981248922','trungtama@gmail.com',1,'2025-10-22 04:07:00','2025-10-22 04:07:00'),(2,'Trung tâm B','Đà Nẵng','0123456780','trungtamb@gmail.com',1,'2025-10-22 07:53:45','2025-10-22 07:53:45'),(3,'Trung tâm A1','Hà Nội','0981248922','trungtama@gmail.com',1,'2025-10-22 04:07:00','2025-10-22 04:07:00'),(4,'Trung tâm B1','Đà Nẵng','0123456780','trungtamb@gmail.com',1,'2025-10-22 07:53:45','2025-10-22 07:53:45'),(5,'Trung tâm A2','Hà Nội','0981248922','trungtama@gmail.com',1,'2025-10-22 04:07:00','2025-10-22 04:07:00'),(6,'Trung tâm B2','Đà Nẵng','0123456780','trungtamb@gmail.com',1,'2025-10-22 07:53:45','2025-10-22 07:53:45'),(7,'Trung tâm A3','Hà Nội','0981248922','trungtama@gmail.com',1,'2025-10-22 04:07:00','2025-10-22 04:07:00'),(8,'Trung tâm B3','Đà Nẵng','0123456780','trungtamb@gmail.com',1,'2025-10-22 07:53:45','2025-10-22 07:53:45'),(9,'Trung tâm A4','Hà Nội','0981248922','trungtama@gmail.com',1,'2025-10-22 04:07:00','2025-10-22 04:07:00'),(10,'Trung tâm B4','Đà Nẵng','0123456780','trungtamb@gmail.com',1,'2025-10-22 07:53:45','2025-10-22 07:53:45'),(11,'Trung tâm A5','Hà Nội','0981248922','trungtama@gmail.com',1,'2025-10-22 04:07:00','2025-10-22 04:07:00'),(12,'Trung tâm B5','Đà Nẵng','0123456780','trungtamb@gmail.com',1,'2025-10-22 07:53:45','2025-10-22 07:53:45');
 /*!40000 ALTER TABLE `ServiceCenters` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

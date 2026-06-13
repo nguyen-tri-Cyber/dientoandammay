@@ -1,5 +1,7 @@
 import { httpClient } from "@/lib/httpClient";
 
+const API_BASE_URL = "/api/inventory/parts";
+
 export interface Part {
     id: number;
     name: string;
@@ -60,16 +62,20 @@ export interface UpdateStockRequest {
 }
 
 export const getParts = async (): Promise<Part[]> => {
-    const res = await httpClient.get('/api/parts');
-    return res.data;
+    const res = await httpClient.get(API_BASE_URL);
+    return res.data?.data ?? res.data;
 };
 
 export const addPart = async (data: CreatePartRequest): Promise<Part> => {
-    const res = await httpClient.post('/api/parts', data);
-    return res.data;
+    const res = await httpClient.post(API_BASE_URL, data);
+    return res.data?.data ?? res.data;
 };
 
-export const updateStock = async (data: UpdateStockRequest): Promise<StockLog> => {
-    const res = await httpClient.post('/api/parts/stock', data);
-    return res.data;
+export const updateStock = async (data: UpdateStockRequest): Promise<Part> => {
+    const res = await httpClient.put(`${API_BASE_URL}/${data.partId}/stock`, {
+        changeType: data.type.toUpperCase(),
+        quantity: data.quantity,
+        reason: data.reason || data.reference,
+    });
+    return res.data?.data ?? res.data;
 };

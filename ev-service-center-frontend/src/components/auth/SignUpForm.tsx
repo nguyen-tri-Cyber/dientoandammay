@@ -41,10 +41,14 @@ export default function SignUpForm() {
   const validateForm = () => {
     const newErrors: typeof errors = {};
 
-    if (!formData.username) {
+    const username = formData.username.trim();
+
+    if (!username) {
       newErrors.username = "Tên người dùng là bắt buộc";
-    } else if (formData.username.length < 3) {
-      newErrors.username = "Tên người dùng phải có ít nhất 3 ký tự";
+    } else if (username.length < 5) {
+      newErrors.username = "Tên người dùng phải có ít nhất 5 ký tự";
+    } else if (username.length > 50) {
+      newErrors.username = "Tên người dùng không được vượt quá 50 ký tự";
     }
 
     if (!formData.email) {

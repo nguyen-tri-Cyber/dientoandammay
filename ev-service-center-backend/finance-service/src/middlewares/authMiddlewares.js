@@ -1,33 +1,44 @@
 import jwt from "jsonwebtoken";
 
 export const authenticate = (req, res, next) => {
-  // 1. Lấy token từ Header Authorization (Bearer <token>)
   const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
 
-  // 2. Kiểm tra nếu không có token
-  if (!token) {
-    return res.status(401).json({ message: "No token provided!" });
+  if (!authHeader) {
+    return res.status(401).json({ message: "Authorization header missing" });
   }
 
-  // 3. Xác thực token
+  const parts = authHeader.split(" ");
+  if (parts.length !== 2 || parts[0] !== "Bearer") {
+    return res.status(401).json({ message: "Invalid token format" });
+  }
+
+  const token = parts[1];
+
+  if (process.env.INTERNAL_SERVICE_TOKEN && token === process.env.INTERNAL_SERVICE_TOKEN) {
+    req.userId = null;
+    req.userRole = "service";
+    return next();
+  }
+
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
       console.error("JWT Verification Error:", err.message);
       return res.status(401).json({ message: "Unauthorized! Invalid or expired token." });
     }
 
-    // 4. Lưu thông tin user vào request để các controller sau có thể sử dụng
     req.userId = decoded.id;
     req.userRole = decoded.role;
 
-    // 5. Chuyển sang controller tiếp theo
     next();
   });
 };
 
 export const authorizeRoles = (...roles) => {
   return (req, res, next) => {
+    if (req.userRole === "service") {
+      return next();
+    }
+
     if (!roles.includes(req.userRole)) {
       return res.status(403).json({ message: "Forbidden! You do not have permission." });
     }

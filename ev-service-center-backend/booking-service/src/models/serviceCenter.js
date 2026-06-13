@@ -7,6 +7,7 @@ const ServiceCenter = sequelize.define('ServiceCenter', {
   address: { type: DataTypes.STRING, allowNull: false },
   phone: { type: DataTypes.STRING, allowNull: false },
   email: { type: DataTypes.STRING },
+  managerId: { type: DataTypes.INTEGER, allowNull: true },
 }, {
   timestamps: true,
 });

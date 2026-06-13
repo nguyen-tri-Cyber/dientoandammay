@@ -25,8 +25,8 @@ const Appointment = sequelize.define('Appointment', {
       }
     }
   },
-  startTime: { type: DataTypes.DATE, allowNull: false, validate: { isDate: true } },
-  endTime: { type: DataTypes.DATE, allowNull: false, validate: { isDate: true } },
+  startTime: { type: DataTypes.DATE, allowNull: true, validate: { isDate: true } },
+  endTime: { type: DataTypes.DATE, allowNull: true, validate: { isDate: true } },
   timeSlot: {
     type: DataTypes.STRING(50),
     allowNull: false,

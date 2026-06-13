@@ -4,13 +4,21 @@
   },
   "compilerOptions": {
     "target": "es2018",
-    "lib": ["es2018", "DOM"],
+    "lib": [
+      "es2018",
+      "DOM"
+    ],
     "esModuleInterop": true,
     "module": "commonjs",
     "strictNullChecks": false,
-    "types": ["codeceptjs", "node"],
+    "types": [
+      "codeceptjs",
+      "node"
+    ],
     "declaration": true,
     "skipLibCheck": true
   },
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }
