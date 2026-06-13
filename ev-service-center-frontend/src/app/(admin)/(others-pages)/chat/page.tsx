@@ -162,13 +162,8 @@ export default function AdminChatPage() {
   );
 }
 const formatChatTime = (timestamp: unknown) => {
-  if (!timestamp || typeof timestamp !== "object" || !("toDate" in timestamp)) return "";
-
-  const toDate = (timestamp as { toDate?: () => Date }).toDate;
-  if (typeof toDate !== "function") return "";
-
-  // Chuyển Firestore Timestamp sang JS Date object
-  const date = toDate();
+  const date = getChatDate(timestamp);
+  if (!date) return "";
   
   const now = new Date();
   // Nếu là tin nhắn hôm nay
@@ -179,4 +174,42 @@ const formatChatTime = (timestamp: unknown) => {
     // Nếu là tin nhắn từ ngày trước đó, hiển thị Ngày/Tháng (ví dụ: 24/11)
     return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' });
   }
+};
+
+const getChatDate = (timestamp: unknown): Date | null => {
+  if (!timestamp) return null;
+
+  if (timestamp instanceof Date) {
+    return Number.isNaN(timestamp.getTime()) ? null : timestamp;
+  }
+
+  if (typeof timestamp === "string" || typeof timestamp === "number") {
+    const date = new Date(timestamp);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  if (typeof timestamp !== "object") return null;
+
+  const firestoreTimestamp = timestamp as {
+    seconds?: number;
+    toDate?: () => Date;
+    toMillis?: () => number;
+  };
+
+  if (typeof firestoreTimestamp.toDate === "function") {
+    const date = firestoreTimestamp.toDate();
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  if (typeof firestoreTimestamp.toMillis === "function") {
+    const date = new Date(firestoreTimestamp.toMillis());
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  if (typeof firestoreTimestamp.seconds === "number") {
+    const date = new Date(firestoreTimestamp.seconds * 1000);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  return null;
 };

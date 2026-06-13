@@ -9,11 +9,12 @@ import Select from "../form/Select";
 import { ChevronDownIcon } from "@/icons";
 import { getUsers, PaginatedUserResponse } from "@/services/userService";
 import { UserRole } from "@/constants/user.constant";
-import { VERY_BIG_NUMBER } from "@/constants/common";
 import SearchableDataTable from "../common/SearchableDataTable";
 import { PaginationInfo } from "../common/Pagination";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "react-hot-toast";
+
+const USER_PAGE_SIZE = 100;
 
 interface TaskDataTableProps {
   items: ChecklistItem[];
@@ -51,6 +52,33 @@ export default function TaskDataTable({
 
   const isStaff = hasRole([UserRole.Staff]);
 
+  const fetchStaffUsers = async (): Promise<PaginatedUserResponse> => {
+    const staffUsers: PaginatedUserResponse["data"] = [];
+    let page = 1;
+    let lastResponse: PaginatedUserResponse | null = null;
+
+    do {
+      lastResponse = await getUsers({
+        page,
+        limit: USER_PAGE_SIZE,
+        role: UserRole.Staff,
+      });
+
+      staffUsers.push(...(lastResponse.data || []));
+      page += 1;
+    } while (lastResponse.hasNext && page <= lastResponse.totalPages);
+
+    return {
+      data: staffUsers,
+      total: lastResponse?.total ?? staffUsers.length,
+      page: 1,
+      limit: staffUsers.length || USER_PAGE_SIZE,
+      totalPages: 1,
+      hasNext: false,
+      hasPrev: false,
+    };
+  };
+
   const openAssignModal = async (itemId: number) => {
     if (!isAdmin) {
       toast.error("Chỉ quản trị viên mới có quyền gán nhân viên phụ trách");
@@ -67,9 +95,11 @@ export default function TaskDataTable({
     setIsAssignModalOpen(true);
     try {
       setIsLoadingUsers(true);
-      const res = await getUsers({ limit: VERY_BIG_NUMBER, role: UserRole.Staff });
+      const res = await fetchStaffUsers();
       setUsersResponse(res);
-    } catch {
+    } catch (error) {
+      toast.error("Không tải được danh sách nhân viên");
+      console.error("Error loading staff users:", error);
     } finally {
       setIsLoadingUsers(false);
     }

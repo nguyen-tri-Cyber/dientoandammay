@@ -1,33 +1,39 @@
 import jwt from "jsonwebtoken";
 
 export const authenticate = (req, res, next) => {
-  // 1. Lấy token từ Header Authorization (Bearer <token>)
   const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
 
-  // 2. Kiểm tra nếu không có token
-  if (!token) {
-    return res.status(403).json({ message: "No token provided!" });
+  if (!authHeader) {
+    return res.status(401).json({ message: "Authorization header missing" });
   }
 
-  // 3. Xác thực token
+  const parts = authHeader.split(" ");
+  if (parts.length !== 2 || parts[0] !== "Bearer") {
+    return res.status(401).json({ message: "Invalid token format" });
+  }
+
+  const token = parts[1];
+
+  if (process.env.INTERNAL_SERVICE_TOKEN && token === process.env.INTERNAL_SERVICE_TOKEN) {
+    req.user = { id: null, role: "service" };
+    req.userId = null;
+    req.userRole = "service";
+    return next();
+  }
+
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
       console.error("JWT Verification Error:", err.message);
       return res.status(401).json({ message: "Unauthorized! Invalid or expired token." });
     }
 
-    // 4. 🔥 QUAN TRỌNG: Gán thẳng toàn bộ decoded payload vào req.user 🔥
-    // Vì token bên Auth-service sinh ra có chứa { id, role } nên decoded sẽ có đủ
     req.user = {
       id: decoded.id,
       role: decoded.role
     };
-    
-    // Vẫn giữ lại req.userId phòng trường hợp các controller cũ của bạn đang dùng nó
     req.userId = decoded.id;
-    
-    // 5. Gọi next() để chuyển sang controller tiếp theo
+    req.userRole = decoded.role;
+
     next();
   });
 };

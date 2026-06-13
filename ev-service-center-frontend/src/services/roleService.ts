@@ -1,4 +1,4 @@
-import { httpClient } from "@/lib/httpClient";
+import { UserRoleOptions } from "@/constants/user.constant";
 
 export interface Role {
     id: string;
@@ -7,32 +7,47 @@ export interface Role {
     updatedAt: string;
 }
 
-export const getRoles = async (): Promise<Role[]> => {
-    const res = await httpClient.get('/roles');
-    return res.data;
+const STATIC_DATE = new Date(0).toISOString();
+
+const roles: Role[] = UserRoleOptions.map((role) => ({
+    id: role.value,
+    name: role.value,
+    createdAt: STATIC_DATE,
+    updatedAt: STATIC_DATE,
+}));
+
+const unsupportedRoleMutation = (): never => {
+    throw new Error("Roles are managed as fixed values on users in auth-service");
 };
 
+export const getRoles = async (): Promise<Role[]> => roles;
+
 export const getRoleById = async (id: string): Promise<Role> => {
-    const res = await httpClient.get(`/roles/${id}`);
-    return res.data;
+    const role = roles.find((item) => item.id === id || item.name === id);
+    if (!role) {
+        throw new Error("Role not found");
+    }
+    return role;
 };
 
 export const createRole = async (data: {
     name: string;
 }): Promise<Role> => {
-    const res = await httpClient.post('/roles', data);
-    return res.data;
+    void data;
+    return unsupportedRoleMutation();
 };
 
 export const updateRole = async (id: string, data: {
     name?: string;
 }): Promise<Role> => {
-    const res = await httpClient.patch(`/roles/${id}`, data);
-    return res.data;
+    void id;
+    void data;
+    return unsupportedRoleMutation();
 };
 
 export const deleteRole = async (id: string): Promise<void> => {
-    await httpClient.delete(`/roles/${id}`);
+    void id;
+    return unsupportedRoleMutation();
 };
 
 export interface CreateRoleDto {
@@ -41,4 +56,4 @@ export interface CreateRoleDto {
 
 export interface UpdateRoleDto {
     name?: string;
-} 
+}

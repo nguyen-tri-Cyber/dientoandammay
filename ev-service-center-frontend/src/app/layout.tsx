@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
-// 👇 Import Widget
-import CustomerChatWidget from "@/components/chat/CustomerChatWidget"; 
-
-const inter = Inter({ subsets: ["latin"] });
+import CustomerChatWidgetLoader from "@/components/chat/CustomerChatWidgetLoader";
 
 export const metadata: Metadata = {
   title: "EV Service Center",
@@ -18,13 +14,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        {/* Phần Main Content */}
+      <body>
         {children}
-        
-        {/* 👇 Gắn Chat Widget vào đây (Nó sẽ nổi lên trên cùng) */}
-        <CustomerChatWidget />
-        
+        <CustomerChatWidgetLoader />
       </body>
     </html>
   );

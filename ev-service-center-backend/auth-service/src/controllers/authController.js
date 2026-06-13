@@ -124,9 +124,15 @@ export const refresh = async (req, res) => {
     return res.status(401).json({ message: "Refresh token expired" });
   }
 
+  const user = await User.findByPk(storedToken.userId);
+  if (!user) {
+    await storedToken.destroy();
+    return res.status(404).json({ message: "User not found" });
+  }
+
   // Tạo access token mới
   const newAccessToken = jwt.sign(
-    { id: storedToken.userId },
+    { id: user.id, role: user.role },
     process.env.JWT_SECRET,
     { expiresIn: "1h" }
   );

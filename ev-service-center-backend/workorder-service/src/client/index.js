@@ -7,7 +7,9 @@ const authHeaders = AUTH_INTERNAL_TOKEN ? { Authorization: `Bearer ${AUTH_INTERN
 export const bookingClient = {
     async getAppointmentById(appointmentId) {
         try {
-            const response = await axios.get(`${API_GATEWAY_URL}/api/booking/${appointmentId}`);
+            const response = await axios.get(`${API_GATEWAY_URL}/api/booking/${appointmentId}`, {
+                headers: authHeaders
+            });
             return response.data.data;
         } catch (error) {
             console.error('Error fetching appointment:', error.message);
@@ -17,7 +19,9 @@ export const bookingClient = {
 
     async getAppointmentsByUserId(userId) {
         try {
-            const response = await axios.get(`${API_GATEWAY_URL}/api/booking/user/${userId}`);
+            const response = await axios.get(`${API_GATEWAY_URL}/api/booking/user/${userId}`, {
+                headers: authHeaders
+            });
             return response.data.data;
         } catch (error) {
             console.error('Error fetching appointments:', error.message);
@@ -29,7 +33,9 @@ export const bookingClient = {
 export const vehicleClient = {
     async getVehicleById(vehicleId) {
         try {
-            const response = await axios.get(`${API_GATEWAY_URL}/api/vehicle/${vehicleId}`);
+            const response = await axios.get(`${API_GATEWAY_URL}/api/vehicle/${vehicleId}`, {
+                headers: authHeaders
+            });
             return response.data.data;
         } catch (error) {
             console.error('Error fetching vehicle:', error.message);

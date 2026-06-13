@@ -10,7 +10,8 @@ const seedDefaultServiceCenter = async () => {
     defaults: {
       name: 'TEST',
       address: 'HCM',
-      phone: '123'
+      phone: '0123456789',
+      managerId: 1
     }
   });
 };
@@ -18,12 +19,7 @@ const seedDefaultServiceCenter = async () => {
 const startServer = async () => {
   try {
     await sequelize.authenticate();
-    try {
-      await sequelize.sync({ alter: true });
-    } catch (syncError) {
-      console.error('Unable to alter booking schema, forcing sync:', syncError.message);
-      await sequelize.sync({ force: true });
-    }
+    await sequelize.sync({ alter: true });
     await seedDefaultServiceCenter();
     app.listen(PORT, () => console.log(`🚀 Booking Service running on port ${PORT}`));
   } catch (error) {

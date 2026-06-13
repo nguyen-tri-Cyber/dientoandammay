@@ -1,5 +1,4 @@
 import express from 'express';
-import sequelize from './config/db.js';
 import workOrderRoutes from './routes/workOrderRoutes.js';
 
 const app = express();
@@ -9,15 +8,5 @@ app.use('/api/workorder', workOrderRoutes);
 
 app.get('/', (req, res) => res.send('🧾 WorkOrder Service is running'));
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
-
-(async () => {
-  try {
-    await sequelize.authenticate();
-    await sequelize.sync();
-    console.log('✅ Database connected for WorkOrder Service.');
-  } catch (err) {
-    console.error('❌ Database connection failed:', err);
-  }
-})();
 
 export default app;

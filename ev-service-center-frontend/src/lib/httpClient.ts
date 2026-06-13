@@ -1,9 +1,20 @@
 import axios from "axios";
 
-const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+const REQUEST_TIMEOUT_MS = 10000;
+const isBrowser = typeof window !== "undefined";
+const getDefaultApiUrl = () => {
+  if (isBrowser) {
+    return `${window.location.protocol}//${window.location.hostname}:8080`;
+  }
+
+  return process.env.API_INTERNAL_URL || "http://localhost:8080";
+};
+
+const baseURL = process.env.NEXT_PUBLIC_API_URL || getDefaultApiUrl();
 
 export const httpClient = axios.create({
   baseURL,
+  timeout: REQUEST_TIMEOUT_MS,
   headers: {
     "Content-Type": "application/json",
   },
@@ -13,7 +24,7 @@ export const httpClient = axios.create({
 httpClient.interceptors.request.use(
   (config) => {
     // Get token from localStorage
-    const token = localStorage.getItem("token");
+    const token = isBrowser ? localStorage.getItem("token") : null;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -36,7 +47,7 @@ httpClient.interceptors.response.use(
       const { status, data } = error.response;
 
       // Handle specific error cases
-      if (status === 401) {
+      if (status === 401 && isBrowser) {
         // Unauthorized - clear token and redirect to login
         localStorage.removeItem("token");
         window.location.href = "/signin";
@@ -44,6 +55,8 @@ httpClient.interceptors.response.use(
 
       // Throw error with message from server
       throw new Error(data?.message || "An error occurred");
+    } else if (error.code === "ECONNABORTED") {
+      throw new Error("Request timed out. Please check the API server.");
     } else if (error.request) {
       // The request was made but no response was received
       throw new Error("No response from server");
