@@ -179,6 +179,17 @@ services:
   #     - ev_network
   #   restart: always
 
+  ai-chat-service:
+    build: ../ev-service-center-backend/ai-chat-service
+    container_name: ev_ai_chat_service
+    env_file: 
+      - ../ev-service-center-backend/ai-chat-service/.env
+    ports:
+      - "5009:5009"
+    networks:
+      - ev_network
+    restart: always
+
   api-gateway:
     build:
       context: ../api-gateway
@@ -199,6 +210,7 @@ services:
       - finance-service
       - inventory-service
       # - chat-service
+      - ai-chat-service
       - notification-service
     networks:
       - ev_network

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import CustomerChatWidgetLoader from "@/components/chat/CustomerChatWidgetLoader";
+import AIChatWidget from "@/components/chat/AIChatWidget";
 
 export const metadata: Metadata = {
   title: "EV Service Center",
@@ -16,6 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         {children}
+        <AIChatWidget />
         <CustomerChatWidgetLoader />
       </body>
     </html>

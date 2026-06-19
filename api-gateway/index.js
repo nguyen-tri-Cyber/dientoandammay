@@ -56,6 +56,8 @@ app.use("/api/vehicle", proxyTo("vehicle", "http://vehicle-service:5006"));
 
 app.use("/api/workorder", proxyTo("workorder", "http://workorder-service:5007"));
 
+app.use("/api/ai-chat", proxyTo("ai-chat", "http://ai-chat-service:5009"));
+
 if (CHAT_SERVICE_ENABLED) {
   app.use("/api/chat", proxyTo("chat", "http://chat-service:5008"));
 } else {

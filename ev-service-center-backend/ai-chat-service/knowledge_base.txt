@@ -1,0 +1,51 @@
+======================================================
+CẨM NANG HƯỚNG DẪN VÀ BẢNG GIÁ DỊCH VỤ - EV SERVICE CENTER
+======================================================
+
+--- PHẦN 1: BẢNG GIÁ DỊCH VỤ BẢO DƯỠNG VÀ SỬA CHỮA ---
+1. Bảo dưỡng định kỳ:
+- Bảo dưỡng mốc 10,000 km: 500,000 VNĐ (Bao gồm kiểm tra tổng quát, vệ sinh lọc gió máy lạnh, kiểm tra phanh).
+- Bảo dưỡng mốc 20,000 km: 1,200,000 VNĐ (Bao gồm thay dầu phanh, vệ sinh hệ thống làm mát pin, đảo lốp).
+- Bảo dưỡng mốc 40,000 km: 2,500,000 VNĐ (Bao gồm thay thế nước làm mát pin chuyên dụng, thay lọc gió máy lạnh, bảo dưỡng hệ thống treo).
+
+2. Bảng giá thay thế phụ tùng cơ bản (Chưa bao gồm VAT):
+- Thay lốp xe (Michelin/Bridgestone): 2,000,000 VNĐ / lốp.
+- Thay ắc quy 12V (Ắc quy phụ): 1,500,000 VNĐ.
+- Thay gạt mưa trước: 350,000 VNĐ / cặp.
+- Nạp gas điều hòa: 400,000 VNĐ.
+
+--- PHẦN 2: HƯỚNG DẪN BẢO HÀNH PIN VÀ XE ---
+1. Chính sách bảo hành:
+- Xe ô tô điện được bảo hành chính hãng 10 năm hoặc 200,000 km (tùy điều kiện nào đến trước).
+- Pin cao áp (Pin truyền động) được bảo hành 10 năm không giới hạn số km.
+- Đổi pin miễn phí nếu dung lượng pin (State of Health - SoH) giảm xuống dưới 70% trong thời gian bảo hành.
+
+2. Điều kiện từ chối bảo hành:
+- Khách hàng tự ý can thiệp phần cứng, độ chế mạch điện.
+- Xe bị ngập nước vượt mức cho phép, đâm đụng làm móp méo khối pin.
+- Sạc pin bằng trụ sạc không đạt tiêu chuẩn của nhà sản xuất.
+
+--- PHẦN 3: CÁC LỖI THƯỜNG GẶP & CÁCH XỬ LÝ (TROUBLESHOOTING) ---
+1. Lỗi sạc không vào điện (Đèn sạc báo đỏ):
+- Nguyên nhân: Súng sạc cắm chưa chặt, trụ sạc bị lỗi, hoặc nhiệt độ pin quá cao.
+- Cách xử lý: Rút súng sạc ra, chờ 5 phút để hệ thống làm mát pin hoạt động, sau đó cắm lại thật chặt cho đến khi nghe tiếng "cạch". Nếu vẫn không được, hãy thử đổi trụ sạc khác hoặc gọi Hotline cứu hộ.
+
+2. Cảnh báo "Rùa vàng" (Giới hạn công suất) hiện trên màn hình:
+- Nguyên nhân: Dung lượng pin còn quá thấp (dưới 10%) hoặc hệ thống truyền động đang bị quá nhiệt.
+- Cách xử lý: Lái xe chậm lại, tìm trạm sạc gần nhất để sạc pin. Tuyệt đối không tăng tốc đột ngột. Nếu pin vẫn còn nhiều mà hiện lỗi này, hãy tấp xe vào lề, tắt máy để xe nghỉ 15 phút.
+
+3. Chìa khóa thông minh không nhận (Không mở được cửa):
+- Nguyên nhân: Chìa khóa hết pin hoặc bị nhiễu sóng từ trường.
+- Cách xử lý: Đặt sát khóa thông minh vào vùng nhận diện trên tay nắm cửa. Hãy nhanh chóng mua pin CR2032 mới để thay thế cho chìa khóa.
+
+4. Màn hình trung tâm bị treo hoặc đen xì:
+- Cách xử lý: Khởi động lại (Reset) màn hình bằng cách nhấn và giữ đồng thời 2 nút xoay trên vô lăng trong vòng 10 giây cho đến khi logo hiện lên.
+
+--- PHẦN 4: HƯỚNG DẪN SẠC PIN ĐÚNG CÁCH NÂNG CAO TUỔI THỌ ---
+- Nên sạc pin khi dung lượng còn khoảng 20% và rút sạc khi đạt 80% - 90% (Quy tắc 20-80) để giúp tế bào pin bền nhất.
+- Hạn chế sử dụng sạc siêu nhanh (Supercharger) liên tục mỗi ngày, chỉ nên dùng khi đi xa. Hàng ngày nên ưu tiên sạc chậm tại nhà bằng bộ sạc theo xe.
+- Không để xe phơi nắng dưới nhiệt độ trên 40 độ C quá lâu khi dung lượng pin đang ở mức đầy 100%.
+
+======================================================
+Mọi thông tin khác vui lòng liên hệ Hotline: 1900 1234
+======================================================
