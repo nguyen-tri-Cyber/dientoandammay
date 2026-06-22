@@ -186,6 +186,7 @@ services:
       - ../ev-service-center-backend/ai-chat-service/.env
     ports:
       - "5009:5009"
+    command: sh -c "python ingest_data.py && uvicorn app:app --host 0.0.0.0 --port 5009"
     networks:
       - ev_network
     restart: always

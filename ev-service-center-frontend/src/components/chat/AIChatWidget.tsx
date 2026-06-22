@@ -8,6 +8,7 @@ interface Message {
 }
 
 export default function AIChatWidget() {
+  const [sessionId] = useState(() => Math.random().toString(36).substring(2, 15));
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     { role: "ai", content: "Chào bạn! Tôi là Trợ lý AI của EV Service Center. Tôi có thể giúp gì cho bạn hôm nay?" }
@@ -31,10 +32,16 @@ export default function AIChatWidget() {
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+      const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
       const res = await fetch(`${apiUrl}/api/ai-chat`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: userMsg }),
+        headers,
+        body: JSON.stringify({ message: userMsg, session_id: sessionId }),
       });
 
       if (!res.ok) {
